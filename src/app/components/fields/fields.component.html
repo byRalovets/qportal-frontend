@@ -1,0 +1,147 @@
+<div class="d-flex flex-column" style="height: 100vh;">
+  <app-header></app-header>
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+       aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
+      <div class="modal-content p-3">
+        <form>
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Edit or create field</h5>
+            <button type="button" (click)="onModalClose()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div>
+              <div class="mb-3 row">
+                <div class="col-3">
+                  <label for="label" class="form-label m-0 mt-1" style="float: left">Label</label>
+                </div>
+                <div class="col">
+                  <input type="text"
+                         id="label"
+                         name="label"
+                         [(ngModel)]="label"
+                         class="form-control"
+                         required
+                  >
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <div class="col-3">
+                  <label for="type" class="form-label m-0 mt-1" style="float: left">Type</label>
+                </div>
+                <div class="col">
+                  <select class="form-select" id="type" aria-label="" name="type" [(ngModel)]="selectedItemType" (change)="updateSelectedFieldType()">
+                    <option value="0" selected>Single line text</option>
+                    <option value="1">Multiline text</option>
+                    <option value="2">Date</option>
+                    <option value="3">Radiobutton</option>
+                    <option value="4">Checkbox</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="mb-2 row" *ngIf="typeHasOptions">
+                <div class="col-3">
+                  <label for="options" class="form-label" style="float: left">Options</label>
+                </div>
+                <div class="col">
+                  <textarea [(ngModel)]="options" name="options" class="form-control" id="options" style="height: 200px;"></textarea>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col offset-3 d-flex flex-row">
+                  <div class="me-3">
+                    <label>
+                      <input [(ngModel)]="isRequired" name="required" type="checkbox" value="required" class="me-2">Required
+                    </label>
+                  </div>
+                  <div class="">
+                    <label>
+                      <input [(ngModel)]="isActive" name="isActive" type="checkbox" value="is-active" class="me-2">Is Active
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" (click)="onModalClose()" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" (click)="onModalSubmit()" data-bs-dismiss="modal" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <main class="d-flex align-content-center h-100 py-5">
+    <div class="container card mx-auto px-0 my-3" style="height: 400px;">
+      <div class="card-header row mx-0">
+        <div class="col d-flex justify-content-start p-0 m-0 fuckThisWorld">
+          <p class="fs-4 m-0 fuckThisWorld">Fields</p>
+        </div>
+        <div class="col d-flex justify-content-end p-0 m-0">
+          <a class="btn btn-success" (click)="onAddClick()" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add field</a>
+        </div>
+      </div>
+      <div class="card-body">
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col">Label</th>
+            <th scope="col">Type</th>
+            <th scope="col">Required</th>
+            <th scope="col">Is Active</th>
+            <th scope="col"> </th>
+            <th scope="col"> </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let f of fields">
+            <td style="width: 200px;">{{ f.label }}</td>
+            <td>{{ f.type }}</td>
+            <td>{{ f.isRequired }}</td>
+            <td>{{ f.isActive }}</td>
+            <td style="width: 30px;" (click)="onEditClick(f)" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                   class="bi bi-pencil-square" viewBox="0 0 16 16">
+                <path
+                  d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                <path fill-rule="evenodd"
+                      d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+              </svg>
+            </td>
+            <td style="width: 30px;" (click)="onDeleteClick(f)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash"
+                   viewBox="0 0 16 16">
+                <path
+                  d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                <path fill-rule="evenodd"
+                      d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+              </svg>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center" style="color: black;">
+            <li class="page-item" (click)="onPreviousClick()">
+              <a class="page-link unselectable" aria-label="Previous">
+                <span aria-hidden="true">◂</span>
+              </a>
+            </li>
+            <li class="page-item unselectable"><a class="page-link unselectable">{{ currentPage }}</a></li>
+            <li class="page-item" (click)="onNextClick()">
+              <a class="page-link unselectable" aria-label="Next">
+                <span aria-hidden="true">▸</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+  </main>
+  <app-footer></app-footer>
+</div>

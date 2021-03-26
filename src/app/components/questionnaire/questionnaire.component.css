@@ -1,0 +1,13 @@
+.form-questionnaire {
+  width: 350px;
+}
+
+.form-questionnaire .form-control {
+  padding: 10px;
+  font-size: 16px;
+}
+
+.link-success {
+  text-decoration: none;
+}
+

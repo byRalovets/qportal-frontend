@@ -1,0 +1,74 @@
+<div class="d-flex flex-column" style="height: 100vh;">
+  <main class="flex-fill text-center d-flex align-content-center h-100">
+    <form class="form-signin m-auto" #f="ngForm" (ngSubmit)="f.form.valid && onSubmit()" novalidate>
+
+      <app-logotype></app-logotype>
+
+      <h1 class="h3 mb-3 fw-normal">Log in</h1>
+
+      <label for="email" class="visually-hidden">Email</label>
+      <input type="email"
+             id="email"
+             name="email"
+             class="form-control"
+             placeholder="Email"
+             required
+             #email="ngModel"
+             ngModel [email]="true"
+             autofocus
+             [(ngModel)]="form.email"
+             (ngModelChange)="onEmailChange(email)"
+             autocomplete="off"
+      >
+
+      <div class="invalid-feedback text-start" role="alert" *ngIf="!isEmailCorrect">
+        Please enter correct email.
+      </div>
+
+      <label for="password" class="visually-hidden">Password</label>
+      <input type="password"
+             id="password"
+             name="password"
+             class="form-control mt-3"
+             placeholder="Password"
+             required
+             [(ngModel)]="form.password"
+             #password="ngModel"
+             (ngModelChange)="onPasswordChange(password)"
+      >
+
+      <div class="invalid-feedback text-start" role="alert" *ngIf="!isPasswordCorrect">
+        Password length should be 6+ characters.
+      </div>
+
+      <div class="row my-2">
+        <div class="col d-flex justify-content-start px-0 ps-4">
+          <label>
+            <input type="checkbox" value="remember-me" class="me-2">Remember me
+          </label>
+        </div>
+        <div class="col float-right px-0 pe-4">
+          <a class="link-success p-0" routerLink="/forgot-password">Forgot your
+            password?</a><!-- Then you stupid looser -->
+        </div>
+      </div>
+
+      <button class="w-100 btn btn-lg btn-success text-uppercase disabled" id="submit" type="submit">Log in</button>
+
+      <div *ngIf="f?.submitted && isLoginFailed" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        Login failed. Try again.
+      </div>
+
+      <div class="d-flex justify-content-center my-2">
+        <div class="me-1">
+          <p>Don't have account?</p>
+        </div>
+        <div class="ms-1">
+          <a class="link-success p-0" routerLink="/signup">Sign up</a>
+        </div>
+      </div>
+
+    </form>
+  </main>
+  <app-footer></app-footer>
+</div>

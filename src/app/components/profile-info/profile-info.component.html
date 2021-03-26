@@ -1,0 +1,53 @@
+<div class="d-flex flex-column" style="height: 100vh;">
+  <app-header></app-header>
+  <main class=" text-center d-flex align-content-center h-100 py-5">
+    <form class="form-questionnaire m-auto p-3" #f="ngForm"  (ngSubmit)="onSubmit()">
+
+      <h1 class="h3 mb-3 fw-normal float-left">Edit profile</h1>
+
+      <div class="mb-3">
+        <label for="email" class="form-label" style="float: left">Email</label>
+        <input type="email" class="form-control" name="email" id="email" [(ngModel)]="form.email" #email=ngModel>
+      </div>
+
+      <div class="mb-3">
+        <label for="firstName" class="form-label" style="float: left">First Name</label>
+        <input type="text" class="form-control" name="firstName" id="firstName" [(ngModel)]="form.firstName" #firstName=ngModel>
+      </div>
+
+      <div class="mb-3">
+        <label for="lastName" class="form-label" style="float: left">Last Name</label>
+        <input type="text" class="form-control" name="lastName" id="lastName" [(ngModel)]="form.lastName" #lastName=ngModel>
+      </div>
+
+      <div class="mb-3">
+        <label for="phoneNumber" class="form-label" style="float: left">Phone Number</label>
+        <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" [(ngModel)]="form.phoneNumber" #phoneNumber=ngModel>
+      </div>
+
+      <hr class="mt-4">
+
+      <div class="mb-3">
+        <label for="password" class="form-label" style="float: left">
+          Your Password</label>
+        <input type="password"
+               id="password"
+               name="password"
+               class="form-control mt-3"
+               required
+               [(ngModel)]="form.password"
+               #password="ngModel"
+               (ngModelChange)="onPasswordChange(password)"
+        >
+
+        <div class="invalid-feedback text-start" role="alert" *ngIf="!isPasswordCorrect">
+          Password length should be 6+ characters.
+        </div>
+      </div>
+
+      <button class="btn btn-lg btn-success text-uppercase" type="submit">Submit</button>
+
+    </form>
+  </main>
+  <app-footer></app-footer>
+</div>

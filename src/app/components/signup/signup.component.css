@@ -1,0 +1,12 @@
+.form-signup {
+  width: 350px;
+}
+
+.form-signup .form-control {
+  padding: 10px;
+  font-size: 16px;
+}
+
+.link-success {
+  text-decoration: none;
+}

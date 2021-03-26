@@ -1,0 +1,12 @@
+.form-signin {
+  width: 350px;
+}
+
+.form-signin .form-control {
+  padding: 10px;
+  font-size: 16px;
+}
+
+.link-success {
+  text-decoration: none;
+}

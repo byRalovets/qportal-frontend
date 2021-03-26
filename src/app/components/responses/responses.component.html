@@ -1,0 +1,57 @@
+<div class="d-flex flex-column" style="height: 100vh;">
+  <app-header></app-header>
+
+  <main class="flex-fill text-center d-flex align-content-center h-100"
+        *ngIf="!hasAnyFields">
+    <div class="m-auto">
+      <p class="fs-3">You have no fields!</p>
+      <p>You can add fields on Fields Page.</p>
+    </div>
+  </main>
+
+  <main class="d-flex align-content-center h-100 py-5" *ngIf="hasAnyFields">
+    <div class="container card mx-auto px-0 my-3" style="height: 400px;">
+      <div class="card-header row mx-0">
+        <div class="col d-flex justify-content-start p-0 m-0 fuckThisWorld">
+          <p class="fs-4 m-0 fuckThisWorld">Responses</p><p
+                class="fs-4 m-0 ms-2 fuckThisWorld text-black-30 fw-light">({{
+            totalResponses }} items)</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col" *ngFor="let header of fieldHeaders">{{ header.label }}</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let response of responses">
+              <td *ngFor="let header of fieldHeaders">{{ findAnswerInResponse(header.fieldId, response) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center" style="color: black;">
+            <li class="page-item" (click)="onPreviousClick()">
+              <a class="page-link unselectable" aria-label="Previous">
+                <span aria-hidden="true">◂</span>
+              </a>
+            </li>
+            <li class="page-item unselectable"><a
+                    class="page-link unselectable">{{ currentPage }}</a></li>
+            <li class="page-item" (click)="onNextClick()">
+              <a class="page-link unselectable" aria-label="Next">
+                <span aria-hidden="true">▸</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+  </main>
+  <app-footer></app-footer>
+</div>

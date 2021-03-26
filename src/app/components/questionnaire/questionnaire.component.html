@@ -1,0 +1,134 @@
+<div class="d-flex flex-column" style="height: 100vh;">
+    <app-header></app-header>
+
+    <main class="text-center d-flex align-content-center h-100"
+          *ngIf="!isLoaded && hasAnyFields"><!--flex-fill-->
+        <div class="spinner-border text-dark m-auto" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </main>
+
+    <main class="flex-fill text-center d-flex align-content-center h-100"
+          *ngIf="isSent && hasAnyFields">
+        <div class="m-auto">
+            <p class="fs-3">Thank you!</p>
+            <p>Yor response was saved.</p>
+        </div>
+    </main>
+
+    <main class="flex-fill text-center d-flex align-content-center h-100"
+          *ngIf="!hasAnyFields">
+        <div class="m-auto">
+            <p class="fs-3">You have no fields!</p>
+            <p>You can add fields on Fields Page.</p>
+        </div>
+    </main>
+
+    <main class="text-center align-content-center pt-5" *ngIf="isLoaded &&
+  !isSent && hasAnyFields">
+
+        <form class="form-questionnaire mx-auto card p-3"
+              (ngSubmit)="onSubmit()">
+
+            <div class="mb-3" *ngFor="let field of fields"
+                 [ngSwitch]="field.type.toString()">
+
+                <ng-template ngSwitchCase="SINGLELINE">
+                    <label [attr.for]="field.id" class="d-inline form-label"
+                           style="float: left">{{ field.label }}<p
+                            class="d-inline text-danger fs-5"
+                            *ngIf="field.isRequired">*</p></label>
+                    <input type="text" class="form-control"
+                           [attr.name]="field.id" [attr.id]="field.id"
+                           [attr.required]="field.isRequired" #input
+                           (input)="onTextAnswerChanged(field.id, input.value)">
+                    <!-- ngModel добавить -->
+                </ng-template>
+
+                <ng-template ngSwitchCase="MULTILINE">
+                    <label [attr.for]="field.id" class="d-inline form-label"
+                           style="float: left">{{ field.label }}<p
+                            class="d-inline text-danger fs-5"
+                            *ngIf="field.isRequired">*</p></label>
+                    <textarea class="form-control" [attr.name]="field.id"
+                              [attr.id]="field.id"
+                              [attr.required]="field.isRequired" #input
+                              (input)="onTextAnswerChanged(field.id, input.value)"></textarea>
+                </ng-template>
+
+                <ng-template ngSwitchCase="DATE">
+                    <label [attr.for]="field.id" class="d-inline form-label"
+                           style="float: left">{{ field.label }}<p
+                            class="d-inline text-danger fs-5"
+                            *ngIf="field.isRequired">*</p></label>
+                    <input type="date" class="form-control"
+                           [attr.name]="field.id" [attr.id]="field.id"
+                           [attr.required]="field.isRequired" #input
+                           (input)="onTextAnswerChanged(field.id, input.value)">
+                </ng-template>
+
+                <ng-template ngSwitchCase="RADIOBUTTON">
+                    <div class="text-start form-label">
+                        <p class="mb-2 d-inline">{{ field.label }}</p>
+                        <p class="text-danger fs-5 d-inline"
+                           *ngIf="field.isRequired">*</p>
+                    </div>
+                    <div class="form-check"
+                         *ngFor="let option of field.options">
+                        <input class="form-check-input" type="radio" #radioInput
+                               [attr.id]="field.id + option"
+                               [attr.name]="'field(' + field.id +')'"
+                               [attr.required]="field.isRequired" #input
+                               (input)="onTextAnswerChanged(field.id, option)">
+                        <label class="form-check-label" style="float: left;"
+                               [attr.for]="radioInput.id">
+                            {{ option }}
+                        </label>
+                    </div>
+                </ng-template>
+
+                <ng-template ngSwitchCase="CHECKBOX">
+                    <div class="text-start form-label">
+                        <p class="mb-2 d-inline">{{ field.label }}</p>
+                        <p class="text-danger fs-5 d-inline"
+                           *ngIf="field.isRequired">*</p>
+                    </div>
+                    <div class="form-check"
+                         *ngFor="let option of field.options">
+                        <input class="form-check-input" type="checkbox"
+                               #checkInput [attr.id]="field.id + option"
+                               [attr.name]="'field(' + field.id +')'"
+                               [attr.required]="field.isRequired ? '' : 'false'"
+                               (input)="onCheckBoxChanged(field.id, checkInput.checked, option)">
+                        <label class="form-check-label" style="float: left;"
+                               [attr.for]="checkInput.id">
+                            {{ option }}
+                        </label>
+                    </div>
+                </ng-template>
+
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <button class="btn btn-lg btn-success text-uppercase"
+                            type="submit">Submit
+                    </button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-lg btn-outline-secondary text-uppercase"
+                            type="reset">Reset
+                    </button>
+                </div>
+            </div>
+
+            <div *ngIf="!requiredFieldAnswered"
+                 class="alert alert-danger alert-dismissible fade show mt-3"
+                 role="alert">
+                Please, fill all fields marked as required (with * character).
+            </div>
+        </form>
+    </main>
+
+    <app-footer></app-footer>
+</div>
