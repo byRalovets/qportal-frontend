@@ -1,6 +1,6 @@
 function requireHTTPS(req, res, next) {
     // The 'x-forwarded-proto' check is for Heroku
-    if (req.stringify().contains('wss://')) {
+    if (req.stringify().contains('ws')) {
         next();
         return;
     }
