@@ -5,8 +5,8 @@ import {Observable} from 'rxjs';
 import {log} from 'util';
 import {FieldDto} from '../../domain/field/field-dto';
 
-const Q_API_URL = 'https://qportal.herokuapp.com//api/questionnaire/';
-const F_API_URL = 'https://qportal.herokuapp.com//api/fields/';
+const Q_API_URL = 'https://qportal.herokuapp.com/api/questionnaire/';
+const F_API_URL = 'https://qportal.herokuapp.com/api/fields/';
 
 @Injectable({
   providedIn: 'root'
