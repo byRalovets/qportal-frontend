@@ -47,7 +47,7 @@ export class ResponsesComponent implements OnInit {
     }
 
     initializeWebsocketConnection() {
-        let socket = new WebSocket('wss://qportal.herokuapp.com/responses-endpoint');
+        let socket = new WebSocket('ws://qportal.herokuapp.com/responses-endpoint');
         this.stompClient = Stomp.over(socket);
 
         const header = {
