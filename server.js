@@ -1,4 +1,4 @@
-function requireHTTPS(req, res, next) {
+/*function requireHTTPS(req, res, next) {
     // The 'x-forwarded-proto' check is for Heroku
     if (req.stringify().contains('ws://')) {
         next();
@@ -9,11 +9,11 @@ function requireHTTPS(req, res, next) {
         return res.redirect('https://' + req.get('host') + req.url);
     }
     next();
-}
+}*/
 
 const express = require('express');
 const app = express();
-app.use(requireHTTPS);
+// app.use(requireHTTPS);
 
 app.use(express.static('./dist/qportal-js'));
 
