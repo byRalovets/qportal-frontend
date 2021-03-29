@@ -20,6 +20,7 @@ import {LoginComponent} from './components/login/login.component';
 import {ProfileInfoComponent} from './components/profile-info/profile-info.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { EmptyHeaderComponent } from './components/empty-header/empty-header.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
     FieldsComponent,
     ResponsesComponent,
     ForgotPasswordComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    EmptyHeaderComponent
   ],
     imports: [
         BrowserModule,
