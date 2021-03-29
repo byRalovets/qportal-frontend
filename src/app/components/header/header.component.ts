@@ -24,8 +24,19 @@ export class HeaderComponent implements OnInit {
 
       log(user);
 
-      const displayedName = (user.firstName + ' ' + user.lastName).trim();
-      this.displayedName = displayedName ? displayedName : user.email;
+      let displayedName;
+
+      if (user.firstName.trim() == 'null' && user.lastName.trim() == null) {
+        displayedName = user.email.trim();
+      } else if (user.firstName.trim() == 'null') {
+        displayedName = 'Mr./Mrs. ' + user.lastName.trim();
+      } else if (user.lastName.trim() == 'null') {
+        displayedName = user.firstName.trim();
+      } else {
+        displayedName = user.firstName.trim() + ' ' + user.lastName.trim();
+      }
+
+      this.displayedName = displayedName;
     }
   }
 
