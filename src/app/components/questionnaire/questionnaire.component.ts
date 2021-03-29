@@ -104,4 +104,7 @@ export class QuestionnaireComponent implements OnInit {
     log(JSON.stringify(responseDto));
   }
 
+  onReset() {
+    this.answers.clear();
+  }
 }
