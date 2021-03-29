@@ -39,9 +39,9 @@ export class SignupComponent implements OnInit {
         this.tokenStorage.saveUser(data);
 
         this.router.navigate(['']);
-      }, err => {
-        this.errorMessage = err.error.message;
-        this.isLoginFailed = true;
+      },
+        err => {
+          log(JSON.stringify(err));
       }
     );
   }
