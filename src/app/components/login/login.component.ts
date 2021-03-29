@@ -44,6 +44,7 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['']);
       },
       err => {
+        log(JSON.stringify(err));
         this.errorMessage = err.error.message;
         this.isLoginFailed = true;
       }
