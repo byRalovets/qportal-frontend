@@ -4,7 +4,6 @@ import {log} from 'util';
 import {FieldsService} from '../../services/fields/fields.service';
 import {FieldType} from '../../domain/field/util/field-type';
 import {FieldDto} from '../../domain/field/field-dto';
-import {Observable} from 'rxjs';
 import {FieldParser} from '../../domain/field/util/fieldParser';
 import {FieldPageDTO} from '../../domain/field-page-dto';
 import {FieldPageParser} from '../../domain/field-page-parser';
@@ -61,10 +60,11 @@ export class FieldsComponent implements OnInit {
         const ops = field.options?.join('\n').trim();
         this.options = ops ? ops : '';
         this.type = field.type;
-        this.typeHasOptions =
-            this.type === FieldType.RADIOBUTTON
-                || this.type === FieldType.CHECKBOX;
+        log(FieldType.RADIOBUTTON);
         this.selectedItemType = FieldType[field.type].toString();
+        log(FieldType[Number(this.selectedItemType)] as unknown as FieldType == FieldType.RADIOBUTTON || FieldType[Number(this.selectedItemType)] as unknown as FieldType == FieldType.CHECKBOX);
+        this.updateSelectedFieldType();
+        log('has options: ' + this.typeHasOptions);
         this.isItemSelected = true;
     }
 
