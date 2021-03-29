@@ -15,7 +15,8 @@ export class LoginComponent implements OnInit {
 
   form: any = {};
   isLoggedIn = false;
-  isLoginFailed = false;
+  isBadCredentials = false;
+  isUserNotExist = false;
   errorMessage = '';
 
   constructor(
@@ -33,20 +34,30 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.isUserNotExist = false;
+    this.isBadCredentials = false;
     this.authService.login(this.form).subscribe(
       data => {
         this.tokenStorage.saveToken(data.token);
         this.tokenStorage.saveUser(data);
 
-        this.isLoginFailed = false;
+        this.isBadCredentials = false;
         this.isLoggedIn = true;
 
         this.router.navigate(['']);
       },
       err => {
         log(JSON.stringify(err));
+
+        if (err.status == 401) {
+          this.isBadCredentials = true;
+          this.isUserNotExist = false;
+        } else if (err.status == 404) {
+          this.isBadCredentials = false;
+          this.isUserNotExist = true;
+        }
+
         this.errorMessage = err.error.message;
-        this.isLoginFailed = true;
       }
     );
   }
