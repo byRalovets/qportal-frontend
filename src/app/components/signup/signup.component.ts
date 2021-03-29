@@ -16,7 +16,6 @@ export class SignupComponent implements OnInit {
   form: any = {};
   isLoggedIn = false;
   isLoginFailed = false;
-  errorMessage = '';
 
   constructor(
     private authService: AuthService,
@@ -32,6 +31,7 @@ export class SignupComponent implements OnInit {
   }
 
   onSubmit() {
+    this.isLoginFailed = false;
     this.authService.register(this.form).subscribe(
       data => {
         log('signupData' + data);
@@ -42,6 +42,10 @@ export class SignupComponent implements OnInit {
       },
         err => {
           log(JSON.stringify(err));
+
+          if (err.status == 401) {
+            this.isLoginFailed = true;
+          }
       }
     );
   }
