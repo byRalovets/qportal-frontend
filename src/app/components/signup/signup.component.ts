@@ -43,7 +43,7 @@ export class SignupComponent implements OnInit {
         err => {
           log(JSON.stringify(err));
 
-          if (err.status == 401) {
+          if (err.status == 409) {
             this.isLoginFailed = true;
           }
       }
