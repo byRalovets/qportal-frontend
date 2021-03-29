@@ -2,14 +2,14 @@
     <app-header></app-header>
 
     <main class="text-center d-flex align-content-center h-100"
-          *ngIf="!isLoaded && hasAnyFields"><!--flex-fill-->
+          *ngIf="!isLoaded && !isSent"><!--flex-fill-->
         <div class="spinner-border text-dark m-auto" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
     </main>
 
     <main class="flex-fill text-center d-flex align-content-center h-100"
-          *ngIf="isSent && hasAnyFields">
+          *ngIf="isSent && isLoaded && hasAnyFields">
         <div class="m-auto">
             <p class="fs-3">Thank you!</p>
             <p>Yor response was saved.</p>
@@ -17,7 +17,7 @@
     </main>
 
     <main class="flex-fill text-center d-flex align-content-center h-100"
-          *ngIf="!hasAnyFields">
+          *ngIf="!hasAnyFields && isLoaded && !isSent">
         <div class="m-auto">
             <p class="fs-3">You have no fields!</p>
             <p>You can add fields on Fields Page.</p>

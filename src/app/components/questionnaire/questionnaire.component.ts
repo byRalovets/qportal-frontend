@@ -21,7 +21,7 @@ export class QuestionnaireComponent implements OnInit {
   isLoaded: boolean = false;
   fields: Array<FieldDto> = [];
   requiredFieldAnswered = true;
-  hasAnyFields = false;
+  hasAnyFields = true;
 
   answers: Map<number , Answer> = new Map<number, Answer>();
   answerDTOlist: Array<AnswerDTO> = [];
