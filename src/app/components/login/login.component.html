@@ -3,6 +3,8 @@
   <main class="flex-fill text-center d-flex align-content-center h-100">
     <form class="form-signin m-auto" #f="ngForm" (ngSubmit)="f.form.valid && onSubmit()" novalidate>
 
+      <app-logotype></app-logotype>
+
       <h1 class="h3 mb-3 fw-normal">Log in</h1>
 
       <label for="email" class="visually-hidden">Email</label>
