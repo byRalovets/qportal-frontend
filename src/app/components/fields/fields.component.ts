@@ -54,6 +54,7 @@ export class FieldsComponent implements OnInit {
 
     onEditClick(field: FieldDto): void {
         this.clearSelectedField();
+        this.updateSelectedFieldType();
         this.id = field.id;
         this.label = field.label;
         this.isRequired = field.isRequired;
@@ -76,7 +77,6 @@ export class FieldsComponent implements OnInit {
     }
 
     onModalSubmit(): void {
-        log('HUI');
         this.updateSelectedFieldType();
 
         if (this.isItemSelected) {

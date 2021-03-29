@@ -12,7 +12,7 @@ import {Router} from '@angular/router';
 export class HeaderComponent implements OnInit {
 
   isAuthenticated: boolean = false;
-  displayedName: string = 'John Doe';
+  displayedName: string = '';
 
   constructor(private token: TokenStorageService, private router: Router) {
   }
@@ -26,11 +26,11 @@ export class HeaderComponent implements OnInit {
 
       let displayedName;
 
-      if (user.firstName.trim() == 'null' && user.lastName.trim() == null) {
+      if (!user.firstName && !user.lastName) {
         displayedName = user.email.trim();
-      } else if (user.firstName.trim() == 'null') {
+      } else if (!user.firstName) {
         displayedName = 'Mr./Mrs. ' + user.lastName.trim();
-      } else if (user.lastName.trim() == 'null') {
+      } else if (!user.lastName) {
         displayedName = user.firstName.trim();
       } else {
         displayedName = user.firstName.trim() + ' ' + user.lastName.trim();
