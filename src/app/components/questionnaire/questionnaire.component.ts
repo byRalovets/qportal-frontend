@@ -7,8 +7,6 @@ import {AnswerDTO} from '../../domain/answer-dto';
 import {ResponseDTO} from '../../domain/response-dto';
 import {TokenStorageService} from '../../services/token-storage/token-storage.service';
 import {FieldParser} from '../../domain/field/util/fieldParser';
-// @ts-ignore
-import {log} from 'util';
 
 @Component({
     selector: 'app-questionnaire',
@@ -36,7 +34,6 @@ export class QuestionnaireComponent implements OnInit {
 
         this.questionnaireService.getFields().subscribe(data => {
             this.fields = FieldParser.parseFields(data);
-            log(this.fields);
             if (this.fields.length > 0) {
                 this.hasAnyFields = true;
             } else {
