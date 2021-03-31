@@ -2,136 +2,130 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {AuthService} from '../../services/auth/auth.service';
 import {TokenStorageService} from '../../services/token-storage/token-storage.service';
-// @ts-ignore
-import {log} from 'util';
 import {NgModel} from '@angular/forms';
 
 @Component({
-  selector: 'app-signup',
-  templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.css']
+    selector: 'app-signup',
+    templateUrl: './signup.component.html',
+    styleUrls: ['./signup.component.css']
 })
 export class SignupComponent implements OnInit {
 
-  form: any = {};
-  isLoggedIn = false;
-  isLoginFailed = false;
+    form: any = {};
+    isLoggedIn = false;
+    isLoginFailed = false;
 
-  constructor(
-    private authService: AuthService,
-    private tokenStorage: TokenStorageService,
-    private router: Router
-  ) {
-  }
+    isEmailCorrect = true;
+    isPasswordCorrect = true;
+    isConfirmationCorrect = true;
 
-  ngOnInit() {
-    if (this.tokenStorage.getToken()) {
-      this.router.navigate(['']);
-    }
-  }
-
-  onSubmit() {
-    this.isLoginFailed = false;
-    this.authService.register(this.form).subscribe(
-      data => {
-        log('signupData' + data);
-        this.tokenStorage.saveToken(data.token);
-        this.tokenStorage.saveUser(data);
-
-        this.router.navigate(['']);
-      },
-        err => {
-          log(JSON.stringify(err));
-
-          if (err.status == 409) {
-            this.isLoginFailed = true;
-          }
-      }
-    );
-  }
-
-  isEmailCorrect: boolean = true;
-  isPasswordCorrect: boolean = true;
-  isConfirmationCorrect: boolean = true;
-
-  onEmailChange(email: NgModel) {
-    if (!email.value) {
-      this.disableSubmitButton();
-      document.getElementById('email')?.classList.remove('is-valid');
-      document.getElementById('email')?.classList.remove('is-invalid');
-      return;
+    constructor(
+        private authService: AuthService,
+        private tokenStorage: TokenStorageService,
+        private router: Router
+    ) {
     }
 
-    const mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    this.isEmailCorrect = !!email.value.match(mailformat);
-    log(email.value + ' ' + this.isEmailCorrect);
-    if (this.isEmailCorrect) {
-      document.getElementById('email')?.classList.add('is-valid');
-      document.getElementById('email')?.classList.remove('is-invalid');
-    } else {
-      document.getElementById('email')?.classList.add('is-invalid');
-      document.getElementById('email')?.classList.remove('is-valid');
-    }
-    this.updateSubmitButtonStatus();
-  }
-
-  onPasswordChange(password: NgModel, passwordConfirm: NgModel) {
-    if (!password.value) {
-      this.disableSubmitButton();
-
-      if (passwordConfirm.value) {
-        this.isConfirmationCorrect = false;
-        document.getElementById('passwordConfirm')?.classList.add('is-invalid');
-        document.getElementById('passwordConfirm')?.classList.remove('is-valid');
-      } else {
-        // this.isConfirmationCorrect = false;
-        document.getElementById('passwordConfirm')?.classList.remove('is-valid');
-        document.getElementById('passwordConfirm')?.classList.remove('is-invalid');
-      }
-
-      document.getElementById('password')?.classList.remove('is-valid');
-      document.getElementById('password')?.classList.remove('is-invalid');
-      return;
+    ngOnInit(): void {
+        if (this.tokenStorage.getToken()) {
+            this.router.navigate(['']).then();
+        }
     }
 
-    this.isPasswordCorrect = password.value.length > 5;
+    onSubmit(): void {
+        this.isLoginFailed = false;
+        this.authService.register(this.form).subscribe(
+            data => {
+                this.tokenStorage.saveToken(data.token);
+                this.tokenStorage.saveUser(data);
 
-    if (this.isPasswordCorrect) {
-      document.getElementById('password')?.classList.add('is-valid');
-      document.getElementById('password')?.classList.remove('is-invalid');
-    } else {
-      document.getElementById('password')?.classList.add('is-invalid');
-      document.getElementById('password')?.classList.remove('is-valid');
+                this.router.navigate(['']).then();
+            },
+            err => {
+                if (err.status === 409) {
+                    this.isLoginFailed = true;
+                }
+            }
+        );
     }
 
-    if (password.value == passwordConfirm.value) {
-      this.enableSubmitButton()
-      this.isConfirmationCorrect = true;
-      document.getElementById('passwordConfirm')?.classList.add('is-valid');
-      document.getElementById('passwordConfirm')?.classList.remove('is-invalid');
-    } else {
-      this.disableSubmitButton();
-      this.isConfirmationCorrect = false;
-      document.getElementById('passwordConfirm')?.classList.remove('is-valid');
-      document.getElementById('passwordConfirm')?.classList.add('is-invalid');
+    onEmailChange(email: NgModel): void {
+        if (!email.value) {
+            this.disableSubmitButton();
+            document.getElementById('email')?.classList.remove('is-valid');
+            document.getElementById('email')?.classList.remove('is-invalid');
+            return;
+        }
+
+        const mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        this.isEmailCorrect = !!email.value.match(mailformat);
+        if (this.isEmailCorrect) {
+            document.getElementById('email')?.classList.add('is-valid');
+            document.getElementById('email')?.classList.remove('is-invalid');
+        } else {
+            document.getElementById('email')?.classList.add('is-invalid');
+            document.getElementById('email')?.classList.remove('is-valid');
+        }
+        this.updateSubmitButtonStatus();
     }
 
-    this.updateSubmitButtonStatus();
-  }
+    onPasswordChange(password: NgModel, passwordConfirm: NgModel): void {
+        if (!password.value) {
+            this.disableSubmitButton();
 
-  updateSubmitButtonStatus() {
-    if (this.isPasswordCorrect && this.isEmailCorrect && this.isConfirmationCorrect && this.form.password && this.form.email && this.form.passwordConfirm) {
-      this.enableSubmitButton();
-    } else {
-      this.disableSubmitButton();
+            if (passwordConfirm.value) {
+                this.isConfirmationCorrect = false;
+                document.getElementById('passwordConfirm')?.classList.add('is-invalid');
+                document.getElementById('passwordConfirm')?.classList.remove('is-valid');
+            } else {
+                document.getElementById('passwordConfirm')?.classList.remove('is-valid');
+                document.getElementById('passwordConfirm')?.classList.remove('is-invalid');
+            }
+
+            document.getElementById('password')?.classList.remove('is-valid');
+            document.getElementById('password')?.classList.remove('is-invalid');
+            return;
+        }
+
+        this.isPasswordCorrect = password.value.length > 5;
+
+        if (this.isPasswordCorrect) {
+            document.getElementById('password')?.classList.add('is-valid');
+            document.getElementById('password')?.classList.remove('is-invalid');
+        } else {
+            document.getElementById('password')?.classList.add('is-invalid');
+            document.getElementById('password')?.classList.remove('is-valid');
+        }
+
+        if (password.value === passwordConfirm.value) {
+            this.enableSubmitButton();
+            this.isConfirmationCorrect = true;
+            document.getElementById('passwordConfirm')?.classList.add('is-valid');
+            document.getElementById('passwordConfirm')?.classList.remove('is-invalid');
+        } else {
+            this.disableSubmitButton();
+            this.isConfirmationCorrect = false;
+            document.getElementById('passwordConfirm')?.classList.remove('is-valid');
+            document.getElementById('passwordConfirm')?.classList.add('is-invalid');
+        }
+
+        this.updateSubmitButtonStatus();
     }
-  }
 
-  disableSubmitButton() {
-    document.getElementById('submit')?.classList.add('disabled');
-  }
+    updateSubmitButtonStatus(): void {
+        if (this.isPasswordCorrect && this.isEmailCorrect && this.isConfirmationCorrect
+            && this.form.password && this.form.email && this.form.passwordConfirm) {
+            this.enableSubmitButton();
+        } else {
+            this.disableSubmitButton();
+        }
+    }
 
-  enableSubmitButton() {
-    document.getElementById('submit')?.classList.remove('disabled');
-  }
+    disableSubmitButton(): void {
+        document.getElementById('submit')?.classList.add('disabled');
+    }
+
+    enableSubmitButton(): void {
+        document.getElementById('submit')?.classList.remove('disabled');
+    }
 }

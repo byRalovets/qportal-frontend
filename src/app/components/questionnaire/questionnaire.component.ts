@@ -1,9 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {FieldDto} from '../../domain/field/field-dto';
 import {QuestionnaireService} from '../../services/questionnaire/questionnaire.service';
-// @ts-ignore
-import {log} from 'util';
 import {Answer} from '../../domain/answer';
 import {AnswerDTO} from '../../domain/answer-dto';
 import {ResponseDTO} from '../../domain/response-dto';
@@ -11,100 +9,94 @@ import {TokenStorageService} from '../../services/token-storage/token-storage.se
 import {FieldParser} from '../../domain/field/util/fieldParser';
 
 @Component({
-  selector: 'app-questionnaire',
-  templateUrl: './questionnaire.component.html',
-  styleUrls: ['./questionnaire.component.css']
+    selector: 'app-questionnaire',
+    templateUrl: './questionnaire.component.html',
+    styleUrls: ['./questionnaire.component.css']
 })
 export class QuestionnaireComponent implements OnInit {
 
-  isSent: boolean = false;
-  isLoaded: boolean = false;
-  fields: Array<FieldDto> = [];
-  requiredFieldAnswered = true;
-  hasAnyFields = true;
+    isSent = false;
+    isLoaded = false;
+    fields: Array<FieldDto> = [];
+    requiredFieldAnswered = true;
+    hasAnyFields = true;
 
-  answers: Map<number , Answer> = new Map<number, Answer>();
-  answerDTOlist: Array<AnswerDTO> = [];
+    answers: Map<number, Answer> = new Map<number, Answer>();
+    answerDTOlist: Array<AnswerDTO> = [];
 
-  constructor(private router: Router, private token: TokenStorageService, private questionnaireService: QuestionnaireService) {
-  }
-
-  ngOnInit(): void {
-    if (!this.token.getToken()) {
-      this.router.navigate(['']);
+    constructor(private router: Router, private token: TokenStorageService, private questionnaireService: QuestionnaireService) {
     }
 
-    this.questionnaireService.getFields().subscribe(data => {
-      this.fields = FieldParser.parseFields(data);
+    ngOnInit(): void {
+        if (!this.token.getToken()) {
+            this.router.navigate(['']).then();
+        }
 
-      if (this.fields.length > 0) {
-        this.hasAnyFields = true;
-      }
+        this.questionnaireService.getFields().subscribe(data => {
+            this.fields = FieldParser.parseFields(data);
 
-      setTimeout(() => this.isLoaded = true, 300);
-    });
-  }
+            if (this.fields.length > 0) {
+                this.hasAnyFields = true;
+            }
 
-  onTextAnswerChanged(fieldId: number | null, value: string): void {
-    if (fieldId == null) {
-      log('CRITICAL ERROR');
-      return;
+            setTimeout(() => this.isLoaded = true, 300);
+        });
     }
 
-    if (this.answers.has(fieldId)) {
-      this.answers.get(fieldId)?.clearAnswers();
-      this.answers.get(fieldId)?.addAnswer(value);
-    } else {
-      const answer = new Answer(fieldId, value);
-      this.answers.set(fieldId, answer);
+    onTextAnswerChanged(fieldId: number | null, value: string): void {
+        if (fieldId == null) {
+            return;
+        }
+
+        if (this.answers.has(fieldId)) {
+            this.answers.get(fieldId)?.clearAnswers();
+            this.answers.get(fieldId)?.addAnswer(value);
+        } else {
+            const answer = new Answer(fieldId, value);
+            this.answers.set(fieldId, answer);
+        }
+
+        this.answers?.set(fieldId, new Answer(fieldId, value));
     }
 
-    this.answers?.set(fieldId, new Answer(fieldId, value));
-  }
+    onCheckBoxChanged(fieldId: number | null, isChecked: boolean, optionLabel: string): void {
 
-  onCheckBoxChanged(fieldId: number | null, isChecked: boolean, optionLabel: string): void {
+        if (fieldId == null) {
+            return;
+        }
 
-    if (fieldId == null) {
-      log('CRITICAL ERROR');
-      return;
+        if (isChecked) {
+            if (this.answers.has(fieldId)) {
+                this.answers.get(fieldId)?.addAnswer(optionLabel);
+            } else {
+                const answer = new Answer(fieldId, optionLabel);
+                this.answers.set(fieldId, answer);
+            }
+        }
     }
 
-    if (isChecked) {
-      if (this.answers.has(fieldId)) {
-        this.answers.get(fieldId)?.addAnswer(optionLabel);
-      } else {
-        const answer = new Answer(fieldId, optionLabel);
-        this.answers.set(fieldId, answer);
-      }
+    onSubmit(): void {
+        this.requiredFieldAnswered = true;
+        for (const field of this.fields.filter(f => f.id !== null && f.isRequired)) {
+            if (field.id != null && !this.answers.has(field.id)) {
+                this.requiredFieldAnswered = false;
+                return;
+            }
+        }
+
+        this.answers.forEach(answer => {
+            if (answer) {
+                this.answerDTOlist.push(new AnswerDTO(answer));
+            }
+        });
+
+        const responseDto = new ResponseDTO(this.answerDTOlist);
+
+        this.isSent = true;
+        this.questionnaireService.sendAnswer(responseDto);
     }
-  }
 
-  onSubmit() {
-    this.requiredFieldAnswered = true;
-    for (let field of this.fields.filter(f => f.id !== null && f.isRequired)) {
-      log('Checking field: ' + field.id);
-      if (field.id != null && !this.answers.has(field.id)) {
-        log('Required but not filled field: ' + field.id);
-        this.requiredFieldAnswered = false;
-        return;
-      }
+    onReset(): void {
+        this.answers.clear();
     }
-
-    this.answers.forEach(answer => {
-      if (answer) {
-        this.answerDTOlist.push(new AnswerDTO(answer));
-      }
-    });
-
-    const responseDto = new ResponseDTO(this.answerDTOlist);
-
-    this.isSent = true;
-    this.questionnaireService.sendAnswer(responseDto);
-
-    log(JSON.stringify(responseDto));
-  }
-
-  onReset() {
-    this.answers.clear();
-  }
 }

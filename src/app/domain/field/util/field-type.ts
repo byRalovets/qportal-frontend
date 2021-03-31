@@ -1,7 +1,7 @@
 export enum FieldType {
-  SINGLELINE,
-  MULTILINE,
-  DATE,
-  RADIOBUTTON,
-  CHECKBOX
+    SINGLELINE,
+    MULTILINE,
+    DATE,
+    RADIOBUTTON,
+    CHECKBOX
 }

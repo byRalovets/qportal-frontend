@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'app-empty-header',
-  templateUrl: './empty-header.component.html',
-  styleUrls: ['./empty-header.component.css']
+    selector: 'app-empty-header',
+    templateUrl: './empty-header.component.html',
+    styleUrls: ['./empty-header.component.css']
 })
 export class EmptyHeaderComponent implements OnInit {
 
-  constructor() { }
+    constructor() {
+    }
 
-  ngOnInit(): void {
-  }
+    ngOnInit(): void {
+    }
 
 }

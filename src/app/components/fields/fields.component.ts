@@ -1,6 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-// @ts-ignore
-import {log} from 'util';
 import {FieldsService} from '../../services/fields/fields.service';
 import {FieldType} from '../../domain/field/util/field-type';
 import {FieldDto} from '../../domain/field/field-dto';
@@ -38,7 +36,7 @@ export class FieldsComponent implements OnInit {
 
     ngOnInit(): void {
         if (!this.token.getToken()) {
-          this.router.navigate(['']);
+            this.router.navigate(['']).then();
         }
 
         this.requestPage(1);
@@ -60,11 +58,8 @@ export class FieldsComponent implements OnInit {
         const ops = field.options?.join('\n').trim();
         this.options = ops ? ops : '';
         this.type = field.type;
-        log(FieldType.RADIOBUTTON);
         this.selectedItemType = FieldType[field.type].toString();
-        log(FieldType[Number(this.selectedItemType)] as unknown as FieldType == FieldType.RADIOBUTTON || FieldType[Number(this.selectedItemType)] as unknown as FieldType == FieldType.CHECKBOX);
         this.updateSelectedFieldType();
-        log('has options: ' + this.typeHasOptions);
         this.isItemSelected = true;
     }
 
@@ -83,9 +78,9 @@ export class FieldsComponent implements OnInit {
 
         if (this.isItemSelected) {
             this.updateSelectedFieldType();
+            // tslint:disable-next-line:prefer-for-of
             for (let i = 0; i < this.fields.length; i++) {
                 if (this.fields[i].id === this.id) {
-                    log(JSON.stringify(this.fields[i]));
                     this.fields[i].label = this.label;
                     this.fields[i].type = this.type;
                     this.fields[i].options = this.options.split(',');
@@ -94,7 +89,7 @@ export class FieldsComponent implements OnInit {
                     this.fieldsService.updateField(this.fields[i]).subscribe(data => {
                         const field = FieldParser.parseField(data);
                         this.fields[i].id = field.id;
-                    })
+                    });
                 }
             }
             this.isItemSelected = false;
@@ -110,15 +105,15 @@ export class FieldsComponent implements OnInit {
 
 
             this.fieldsService.addField(JSON.stringify(field)).subscribe(data => {
-               const field = FieldParser.parseField(data);
+                const fieldToAdd = FieldParser.parseField(data);
 
-               if (this.fields.length < this.ITEM_COUNT) {
-                   this.fields.push(field);
-               } else {
-                   this.fields = [field];
-                   this.currentPage++;
-                   this.totalPages++;
-               }
+                if (this.fields.length < this.ITEM_COUNT) {
+                    this.fields.push(fieldToAdd);
+                } else {
+                    this.fields = [fieldToAdd];
+                    this.currentPage++;
+                    this.totalPages++;
+                }
             });
         }
         this.isItemSelected = false;
@@ -126,12 +121,9 @@ export class FieldsComponent implements OnInit {
 
     // Pagination
 
-    requestPage(requestedPage: number) {
+    requestPage(requestedPage: number): void {
         this.fieldsService.getFields(requestedPage, this.ITEM_COUNT).subscribe(data => {
             const fieldsPage: FieldPageDTO = FieldPageParser.parseFieldPage(data);
-
-            log('requestedPage: ' + fieldsPage.requestedPage);
-            log('totalPages: ' + fieldsPage.totalPages);
 
             if (fieldsPage.totalPages === 0) {
                 this.totalPages = 0;
@@ -178,7 +170,7 @@ export class FieldsComponent implements OnInit {
                 || this.selectedItemType === FieldType.CHECKBOX.toString());
     }
 
-    clearSelectedField() {
+    clearSelectedField(): void {
         this.selectedItemType = FieldType.SINGLELINE.toString();
         this.label = '';
         this.isRequired = false;

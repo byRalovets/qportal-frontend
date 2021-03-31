@@ -2,10 +2,10 @@ import {AnswerDTO} from './answer-dto';
 
 export class ResponseDTO {
 
-  answers: Array<AnswerDTO>;
+    answers: Array<AnswerDTO>;
 
-  constructor(answers: Array<AnswerDTO>) {
-    this.answers = answers;
-  }
+    constructor(answers: Array<AnswerDTO>) {
+        this.answers = answers;
+    }
 
 }

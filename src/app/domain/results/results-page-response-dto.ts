@@ -2,9 +2,13 @@ import {ResponseDTO} from '../response-dto';
 
 export class ResultsPageResponseDTO {
 
+    // tslint:disable-next-line:variable-name
     private _responses: Array<ResponseDTO>;
+    // tslint:disable-next-line:variable-name
     private _totalPages: number;
+    // tslint:disable-next-line:variable-name
     private _totalResponses: number;
+    // tslint:disable-next-line:variable-name
     private _requestedPage: number;
 
     constructor(responses: Array<ResponseDTO>, totalPages: number, totalElements: number, requestedPage: number) {

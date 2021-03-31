@@ -1,11 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from '../../services/auth/auth.service';
 import {TokenStorageService} from '../../services/token-storage/token-storage.service';
 import {Router} from '@angular/router';
-import {ActivatedRoute} from '@angular/router';
 import {NgModel} from '@angular/forms';
-// @ts-ignore
-import {log} from 'util';
 import {ForgotPasswordService} from '../../services/forgot-password/forgot-password.service';
 
 @Component({
@@ -15,21 +11,22 @@ import {ForgotPasswordService} from '../../services/forgot-password/forgot-passw
 })
 export class ForgotPasswordComponent implements OnInit {
 
-    form: any = {};
-    isLoggedIn = false;
-    isSent: boolean = false;
-
     constructor(
         private forgotPasswordService: ForgotPasswordService,
         private tokenStorage: TokenStorageService,
-        private router: Router,
-        private route: ActivatedRoute
+        private router: Router
     ) {
     }
 
+    form: any = {};
+    isLoggedIn = false;
+    isSent = false;
+
+    isEmailCorrect = true;
+
     ngOnInit(): void {
         if (this.tokenStorage.getToken()) {
-            this.router.navigate(['']);
+            this.router.navigate(['']).then();
             return;
         }
     }
@@ -39,9 +36,7 @@ export class ForgotPasswordComponent implements OnInit {
         this.forgotPasswordService.sendRequest(this.form).subscribe();
     }
 
-    isEmailCorrect: boolean = true;
-
-    onEmailChange(email: NgModel) {
+    onEmailChange(email: NgModel): void {
         if (!email.value) {
             this.disableSubmitButton();
             document.getElementById('email')?.classList.remove('is-valid');
@@ -51,7 +46,6 @@ export class ForgotPasswordComponent implements OnInit {
 
         const mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
         this.isEmailCorrect = !!email.value.match(mailformat);
-        log(email.value + ' ' + this.isEmailCorrect);
         if (this.isEmailCorrect) {
             document.getElementById('email')?.classList.add('is-valid');
             document.getElementById('email')?.classList.remove('is-invalid');
@@ -67,11 +61,11 @@ export class ForgotPasswordComponent implements OnInit {
         }
     }
 
-    disableSubmitButton() {
+    disableSubmitButton(): void {
         document.getElementById('submit')?.classList.add('disabled');
     }
 
-    enableSubmitButton() {
+    enableSubmitButton(): void {
         document.getElementById('submit')?.classList.remove('disabled');
     }
 }

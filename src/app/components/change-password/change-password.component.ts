@@ -2,8 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../../services/auth/auth.service';
 import {TokenStorageService} from '../../services/token-storage/token-storage.service';
 import {Router} from '@angular/router';
-// @ts-ignore
-import {log} from 'util';
 import {NgModel} from '@angular/forms';
 
 @Component({
@@ -27,20 +25,17 @@ export class ChangePasswordComponent implements OnInit {
 
     ngOnInit(): void {
         if (!this.tokenStorage.getToken()) {
-            this.router.navigate(['/signin']);
+            this.router.navigate(['/signin']).then();
         }
     }
 
     onSubmit(): void {
-        log(this.form.oldPassword);
-        log(this.form.newPassword);
         this.authService.updatePassword({oldPassword: this.form.oldPassword, newPassword: this.form.newPassword}).subscribe(
             data => {
-                log('signupData' + data);
                 this.tokenStorage.saveToken(data.token);
                 this.tokenStorage.saveUser(data);
 
-                this.router.navigate(['']);
+                this.router.navigate(['']).then();
             }, err => {
                 this.errorMessage = err.error.message;
                 this.isLoginFailed = true;
@@ -55,8 +50,6 @@ export class ChangePasswordComponent implements OnInit {
             document.getElementById('oldPassword')?.classList.remove('is-invalid');
             return;
         }
-
-        log('OLD PASSWORD: ' + oldPassword.value);
 
         this.isOldPasswordCorrect = oldPassword.value.length > 5;
 

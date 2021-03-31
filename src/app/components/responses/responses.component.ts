@@ -4,13 +4,10 @@ import {FieldHeaderDTO} from '../../domain/field-header-dto';
 import {QuestionnaireService} from '../../services/questionnaire/questionnaire.service';
 import {FieldHeaderParser} from '../../domain/field-header-parser';
 import {CompatClient, Stomp} from '@stomp/stompjs';
-// @ts-ignore
-import {log} from 'util';
 import {AuthService} from '../../services/auth/auth.service';
 import {TokenStorageService} from '../../services/token-storage/token-storage.service';
 import {ResultsPageRequestDTO} from '../../domain/results/results-page-request-dto';
 import {ResultsPageResponseParser} from '../../domain/results/utils/results-page-response-parser';
-import {ResultsService} from '../../services/results/results.service';
 
 @Component({
     selector: 'app-responses',
@@ -27,12 +24,13 @@ export class ResponsesComponent implements OnInit {
     ITEM_COUNT = 5;
     hasAnyFields = false;
 
-    responses: Array<ResponseDTO> = [];//{ answers: [ {fieldId: 1, text: "Anthony"}, {fieldId: 2, text: "Ralovets"}, {fieldId: 3, text: "Horki"}, {fieldId: 4, text: "Male"} ]}];
-    fieldHeaders: Array<FieldHeaderDTO> = [];// { fieldId: 1, label: "First Name" }, { fieldId: 2, label: "Last Name" }, { fieldId: 3, label: "City" }, { fieldId: 4, label: "Sex" } ];
+    responses: Array<ResponseDTO> = [];
+    fieldHeaders: Array<FieldHeaderDTO> = [];
 
     websocketAccessToken = '';
 
-    constructor(private questionnaireService: QuestionnaireService, private authService: AuthService, private tokenStorage: TokenStorageService, private resultsService: ResultsService) {
+    constructor(private questionnaireService: QuestionnaireService, private authService: AuthService,
+                private tokenStorage: TokenStorageService) {
     }
 
     ngOnInit(): void {
@@ -46,25 +44,21 @@ export class ResponsesComponent implements OnInit {
         });
     }
 
-    initializeWebsocketConnection() {
-        let socket = new WebSocket('wss://qportal.herokuapp.com/responses-endpoint');
+    initializeWebsocketConnection(): void {
+        const socket = new WebSocket('wss://qportal.herokuapp.com/responses-endpoint');
         this.stompClient = Stomp.over(socket);
 
         const header = {
-            "jwt-token" : this.tokenStorage.getToken()
+            'jwt-token': this.tokenStorage.getToken()
         };
 
-        log(header);
-
-        this.stompClient.connect(header, (data: string) => {
+        this.stompClient.connect(header, () => {
             this.requestPage(1);
             this.stompClient?.subscribe('/user/topic/greetings', responsePageMessage => {
-                log(responsePageMessage.body);
 
                 const resultsPageResponse = ResultsPageResponseParser.parseResultsPageResponse(responsePageMessage.body);
 
                 if (resultsPageResponse.totalPages === 0) {
-                    log('resultsPageResponse.totalPages === 0');
                     this.totalPages = 0;
                     this.currentPage = 1;
                     this.responses = [];
@@ -81,7 +75,7 @@ export class ResponsesComponent implements OnInit {
         });
     }
 
-    requestPage(requestedPage: number) {
+    requestPage(requestedPage: number): void {
         const request = new ResultsPageRequestDTO(
             requestedPage,
             this.ITEM_COUNT,
@@ -92,9 +86,9 @@ export class ResponsesComponent implements OnInit {
         this.stompClient?.send('/app/responses', {}, JSON.stringify(request));
     }
 
-    findAnswerInResponse(fieldId: number, response: ResponseDTO) {
-        for (let answer of response.answers) {
-            if (answer.fieldId == fieldId) {
+    findAnswerInResponse(fieldId: number, response: ResponseDTO): string {
+        for (const answer of response.answers) {
+            if (answer.fieldId === fieldId) {
                 return answer.text;
             }
         }
